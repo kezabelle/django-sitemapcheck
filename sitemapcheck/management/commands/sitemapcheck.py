@@ -47,11 +47,11 @@ class Command(BaseCommand):
                 check_msg = mark_safe(check.msg).encode('ascii', 'ignore')
                 msg = '{name!s}: {msg!s}'.format(name=name, msg=check_msg)
                 if check.code == Error:
-                    self.stderr.write("\t" + self.style.ERROR(msg))
+                    self.stderr.write("    " + self.style.ERROR(msg))
                 elif check.code == Caution:
-                    self.stdout.write("\t" + self.style.WARNING(msg))
+                    self.stdout.write("    " + self.style.WARNING(msg))
                 elif check.code == Success:
-                    self.stdout.write("\t" + self.style.HTTP_REDIRECT(msg))
+                    self.stdout.write("    " + self.style.HTTP_REDIRECT(msg))
                 else:
-                    self.stderr.write("\t" + self.style.ERROR(msg))
+                    self.stderr.write("    " + self.style.ERROR(msg))
         render_report(results_for_reports, root_dir=os.getcwd())
