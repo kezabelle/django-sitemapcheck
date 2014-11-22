@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 from django.utils.encoding import force_text
-from django.utils.html import strip_tags
 from django.utils import six
 from django.utils.safestring import mark_safe
 import os

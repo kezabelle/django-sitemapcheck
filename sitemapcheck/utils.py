@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
 from multiprocessing import cpu_count, Pool
-import pickle
-from CommonMark import DocParser, HTMLRenderer
+from django.utils import six
 from django.utils.encoding import force_text
 import os
 from django.conf import settings
@@ -11,7 +10,6 @@ from django.core.urlresolvers import (reverse, NoReverseMatch, resolve,
                                       Resolver404)
 from django.template.loader import render_to_string
 from django.test import Client
-from django.utils.six.moves import urllib_parse
 from .settings import SITEMAPCHECK_CHECKS, SITEMAPCHECK_MULTIPROCESSING
 
 try:  # try for Django 1.7+ first.
@@ -76,7 +74,7 @@ def sitemap_request_iterator(sitemap_results, client=None):
         if 'location' not in urlinfo:
             continue
         full_url = urlinfo.get('location')
-        path = urllib_parse.urlsplit(full_url).path
+        path = six.moves.urllib_parse.urlsplit(full_url).path
         yield SitemapRequestResponse(handler=client, path=path,
                                      sitemap_item=urlinfo)
 
