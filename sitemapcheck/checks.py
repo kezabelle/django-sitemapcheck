@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.utils.encoding import force_text
 import re
-# from django.utils.translation import ugettext_lazy as _
-from django.utils.six import text_type as _
+from django.utils.translation import ugettext_lazy as _
 from collections import namedtuple
 
 Success = _("Success")
