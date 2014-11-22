@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 from django.utils.encoding import force_text
 from django.utils.html import strip_tags
+from django.utils import six
 from django.utils.safestring import mark_safe
 import os
 import sys
@@ -33,6 +34,19 @@ class Command(BaseCommand):
         data = sitemap_urls(iterable_sitemaps)
         prepared_requests = prepare_sitemap_requests(sitemap_results=data)
         if use_multiprocessing():
+            if options.get('interactive', True):
+                msg = ("You're about to check {count!s} URLs using multiple "
+                       "processes, where using Ctrl-C to stop processing is "
+                       "flakey, if you have trouble with it, set "
+                       "`SITEMAPCHECK_MULTIPROCESSING` to False".format(
+                           count=len(prepared_requests)))
+                self.stderr.write(self.style.ERROR(msg))
+                msg = "Are you sure you wish to continue? [y/N] "
+                yes_or_no = six.moves.input(msg)
+                if not yes_or_no.lower().startswith('y'):
+                    msg = "URL checks cancelled"
+                    self.stderr.write(self.style.ERROR(msg))
+                    return sys.exit(1)
             results = multiprocessor(prepared_requests)
         else:
             results = singleprocessor(prepared_requests)
