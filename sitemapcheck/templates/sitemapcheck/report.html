@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sitemap URL Report</title>
+</head>
+<body>
+<h1>Sitemap URL Report</h1>
+{% for result in results %}
+<h2>{{ result.path }}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Check</th>
+            <th>Result</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for check_result in result.check_results %}
+        <tr>
+            <td>{{ check_result.name }}</td>
+            <td>{{ check_result.code }}</td>
+            <td>{{ check_result.msg }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+</body>
+</html>
