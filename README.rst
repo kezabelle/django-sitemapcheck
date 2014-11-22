@@ -25,12 +25,18 @@ Currently checks exist for:
 
 * The HTTP response code (200 is good, 3xx is a caution, everything else is an
   error)
+* The presence of an HTML5 doctype (``<!doctype html>``)
 * The presence of the HTML ``<title>`` element
 * The presence of an HTML ``<meta name="description" ...``
 * The presence of an HTML ``<meta name="keywords" ...``
 * The presence of a rel-canonical URL
 * The presence of an HTML ``<meta name="theme-color" ...`` for new
   Chrome/Android combos.
-* _whaever else I come up with..._
+* The presence of an HTML ``<meta charset="...">``
+* The presence of an HTML ``<meta name="viewport" ...``
+* The presence of an ``<meta name="mobile-web-app-capable" ...`` (used by
+  Android devices to decide if a website may be added to the homescreen)
+* The presence of an ``<meta name="apple-mobile-web-app-capable" ...`` (used by
+  iOS devices to decide if a website may be added to the homescreen)
 
 .. _Django: https://www.djangoproject.com/
