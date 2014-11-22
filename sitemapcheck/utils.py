@@ -101,7 +101,22 @@ def handle_request_response(client, path):
         # instantiates the test client or whatever
         client = client()
     data = client.get(path)
-    return Response(raw_data='', path=path, status_code=data.status_code,
+    # the following modifications allow the django test Client to be
+    # pickled, allowing us to multiplex over more than one process using
+    # the stdlib's multiprocessing module.
+    if isinstance(client, Client):
+        # this first one is https://code.djangoproject.com/ticket/23895#ticket
+        data._request.resolver_match = None
+        data._request.environ['wsgi.input'] = None
+        data._request.environ['wsgi.errors'] = None
+        data._request._stream = None
+        data.client.handler._request_middleware = []
+        data.client.handler._exception_middleware = []
+        data.client.handler._view_middleware = []
+        data.client.handler._response_middleware = []
+        data.client.handler._template_response_middleware = []
+        data.client.errors = None
+    return Response(raw_data=data, path=path, status_code=data.status_code,
                     check_results=tuple(run_checks_over_response(data)))
 
 
