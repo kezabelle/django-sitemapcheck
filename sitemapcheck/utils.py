@@ -11,6 +11,9 @@ from django.core.urlresolvers import (reverse, NoReverseMatch, resolve,
 from django.template.loader import render_to_string
 from django.test import Client
 from .settings import SITEMAPCHECK_CHECKS, SITEMAPCHECK_MULTIPROCESSING
+from .checks import Success
+from .checks import Caution
+from .checks import Error
 
 try:  # try for Django 1.7+ first.
     from django.utils.module_loading import import_string
@@ -160,7 +163,11 @@ ReportLocations = namedtuple('ReportLocations', 'from_file, output_file context'
 
 def render_report(results, root_dir):
     template_path = "sitemapcheck/report.html"
-    context = {'results': results}
+    context = {'results': results,
+               'Success': Success,
+               'Warning': Caution,
+               'Caution': Caution,
+               'Error': Error}
     report_output = render_to_string(template_name=template_path,
                                      dictionary=context)
     report_output_text = force_text(report_output)

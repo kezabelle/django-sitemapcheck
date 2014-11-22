@@ -2,30 +2,81 @@
 <html>
 <head>
     <title>Sitemap URL Report</title>
+    <style type="text/css">
+        html {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: sans-serif;
+            padding: 1em;
+            margin: 0;
+            color: #333;
+        }
+        a {
+            text-decoration: none;
+            color: #888;
+        }
+        .check-result-{{ Success|slugify }} {
+            background: #CFC;
+        }
+        .check-result-{{ Caution|slugify }} {
+            background: #FFC;
+        }
+        .check-result-{{ Error|slugify }} {
+            background: #FCC;
+        }
+        .check-result td {
+            padding: 0.25em;
+        }
+
+        .check-code {
+            display: none;
+        }
+
+        .back-to-top {
+            padding: 0.25em;
+            text-align: right;
+            font-size: 0.750em;
+        }
+
+    </style>
 </head>
 <body>
+<a name="top" id="top"></a>
 <h1>Sitemap URL Report</h1>
-{% for result in results %}
-<h2>{{ result.path }}</h2>
+<h2>{{ results|length }} checked</h2>
+<ol>
+    {% for result in results %}
+    <li><a href="#link-{{ result.path|slugify }}">{{ result.path }}</a></li>
+    {% endfor %}
+</ol>
 
-<table>
+{% for result in results %}
+<hr>
+<h3><a href="{{ result.path }}" name="link-{{ result.path|slugify }}" id="link-{{ result.path|slugify }}">
+    {{ result.path }}
+</a></h3>
+
+<table cellspacing="0" cellpadding="0">
     <thead>
         <tr>
-            <th>Check</th>
-            <th>Result</th>
-            <th>Message</th>
+            <th class="check-name">Check</th>
+            <th class="check-code">Result</th>
+            <th class="check-message">Message</th>
         </tr>
     </thead>
     <tbody>
         {% for check_result in result.check_results %}
-        <tr>
-            <td>{{ check_result.name }}</td>
-            <td>{{ check_result.code }}</td>
-            <td>{{ check_result.msg }}</td>
+        <tr class="check-result check-result-{{ check_result.code|slugify }}">
+            <td class="check-name">{{ check_result.name }}</td>
+            <td class="check-code">{{ check_result.code }}</td>
+            <td class="check-message">{{ check_result.msg }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<span class="back-to-top"><a href="#top">back to top</a></span>
 {% endfor %}
 </body>
 </html>
