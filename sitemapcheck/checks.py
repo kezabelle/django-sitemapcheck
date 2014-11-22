@@ -85,3 +85,47 @@ def check_html_meta_charset(response):
                                code=Caution, name=checkname)
     return CheckedResponse(msg=','.join(data.groups()), code=Success,
                            name=checkname)
+
+
+def check_html_meta_viewport(response):
+    checkname = _("HTML meta viewport")
+    data = re.search(r'<meta name="viewport" content="(.+?)">',
+                     force_text(response.content))
+    if data is None:
+        return CheckedResponse(msg='Missing <meta name="viewport">',
+                               code=Caution, name=checkname)
+    return CheckedResponse(msg=','.join(data.groups()), code=Success,
+                           name=checkname)
+
+
+def check_mobile_homescreen(response):
+    checkname = _("May be added to Android homescreen")
+    data = re.search(r'<meta name="mobile-web-app-capable" content="(.+?)">',
+                     force_text(response.content))
+    if data is None:
+        return CheckedResponse(msg='no',
+                               code=Caution, name=checkname)
+    return CheckedResponse(msg=','.join(data.groups()), code=Success,
+                           name=checkname)
+
+
+def check_ios_homescreen(response):
+    checkname = _("May be added to iOS homescreen")
+    data = re.search(r'<meta name="apple-mobile-web-app-capable" '
+                     r'content="(.+?)">', force_text(response.content))
+    if data is None:
+        return CheckedResponse(msg='no',
+                               code=Caution, name=checkname)
+    return CheckedResponse(msg=','.join(data.groups()), code=Success,
+                           name=checkname)
+
+
+def check_html5_doctype(response):
+    checkname = _("HTML5 doctype")
+    copied_content = response.content.strip()
+    if not copied_content.startswith('<!doctype html>'):
+        return CheckedResponse(msg='Missing the HTML5 doctype, or it is not '
+                                   'the first element in the document',
+                               code=Error, name=checkname)
+    return CheckedResponse(msg='yes', code=Success,
+                           name=checkname)
