@@ -25,6 +25,7 @@ setup(
     install_requires=[
         'Django>=1.6.0',
     ],
+    test_suite='runtests.runtests',
     author="Keryn Knight",
     author_email='python-package@kerynknight.com',
     description="Check various things about every page mounted in your sitemap.xml",
