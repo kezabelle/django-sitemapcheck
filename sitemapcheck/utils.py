@@ -144,11 +144,11 @@ def multiprocessor(prepared_requests):
     else:
         # let this bubble up an error if the user has configured it stupidly.
         processes = int(processes)
-    pool = Pool(cpu_count())
+    pool = Pool(processes)
     for_pooling = ((x.handler, x.path) for x in prepared_requests)
     try:
         results = pool.map_async(func=_unpack_handle_request_response,
-                             iterable=for_pooling)
+                                 iterable=for_pooling)
         pool.close()
         pool.join()
     except KeyboardInterrupt:
