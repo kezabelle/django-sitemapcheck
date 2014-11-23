@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils import six
 from django.utils.encoding import force_text
 import re
 from django.utils.translation import ugettext_lazy as _
@@ -123,7 +124,7 @@ def check_ios_homescreen(response):
 def check_html5_doctype(response):
     checkname = _("HTML5 doctype")
     copied_content = response.content.strip()
-    if not copied_content.startswith('<!doctype html>'):
+    if not copied_content.startswith(six.binary_type('<!doctype html>')):
         return CheckedResponse(msg='Missing the HTML5 doctype, or it is not '
                                    'the first element in the document',
                                code=Error, name=checkname)
