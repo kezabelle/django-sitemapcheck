@@ -7,6 +7,9 @@ therein, running a number of configurable checks against the response.
 
 Writes a report to stdout and an HTML file when invoked.
 
+.. image:: https://travis-ci.org/kezabelle/django-sitemapcheck.svg?branch=master
+  :target: https://travis-ci.org/kezabelle/django-sitemapcheck
+
 Usage
 -----
 
