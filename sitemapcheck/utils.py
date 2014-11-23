@@ -78,10 +78,6 @@ def sitemap_urls_iterator(sitemaps):
                 pass
 
 
-def sitemap_urls(sitemaps):
-    return tuple(sitemap_urls_iterator(sitemaps))
-
-
 SitemapRequestResponse = namedtuple('SitemapRequestResponse',
                                     'handler path sitemap_item')
 
@@ -96,11 +92,6 @@ def sitemap_request_iterator(sitemap_results, client=None):
         path = six.moves.urllib_parse.urlsplit(full_url).path
         yield SitemapRequestResponse(handler=client, path=path,
                                      sitemap_item=urlinfo)
-
-
-def prepare_sitemap_requests(sitemap_results, client=None):
-    return tuple(sitemap_request_iterator(sitemap_results=sitemap_results,
-                                          client=client))
 
 
 def run_checks_over_response(response):

@@ -10,8 +10,8 @@ from sitemapcheck.checks import Error
 from sitemapcheck.checks import Caution
 from sitemapcheck.checks import Success
 from sitemapcheck.utils import get_view_sitemaps
-from sitemapcheck.utils import prepare_sitemap_requests
-from sitemapcheck.utils import sitemap_urls
+from sitemapcheck.utils import sitemap_request_iterator
+from sitemapcheck.utils import sitemap_urls_iterator
 from sitemapcheck.utils import use_multiprocessing
 from sitemapcheck.utils import singleprocessor
 from sitemapcheck.utils import multiprocessor
@@ -30,15 +30,14 @@ class Command(BaseCommand):
             # return view_sitemaps
             return sys.exit(1)
         iterable_sitemaps = view_sitemaps.sitemaps.values()
-        data = sitemap_urls(iterable_sitemaps)
-        prepared_requests = prepare_sitemap_requests(sitemap_results=data)
+        data = sitemap_urls_iterator(iterable_sitemaps)
+        prepared_requests = sitemap_request_iterator(sitemap_results=data)
         if use_multiprocessing():
             if options.get('interactive', True):
-                msg = ("You're about to check {count!s} URLs using multiple "
+                msg = ("You're about to check URLs using multiple "
                        "processes, where using Ctrl-C to stop processing is "
                        "flakey, if you have trouble with it, set "
-                       "`SITEMAPCHECK_MULTIPROCESSING` to False".format(
-                           count=len(prepared_requests)))
+                       "`SITEMAPCHECK_MULTIPROCESSING` to False")
                 self.stderr.write(self.style.ERROR(msg))
                 msg = "Are you sure you wish to continue? [y/N] "
                 yes_or_no = six.moves.input(msg)
