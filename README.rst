@@ -41,6 +41,11 @@ Currently checks exist for:
   Android devices to decide if a website may be added to the homescreen)
 * The presence of an ``<meta name="apple-mobile-web-app-capable" ...`` (used by
   iOS devices to decide if a website may be added to the homescreen)
+* If the page returns an ``Allow`` HTTP header defining HTTP verbs available.
+* If the page has a `Content-Security-Policy`_ header.
+* If the page as a `X-Frame-Options`_ header.
+* If the page has an `X-Content-Type-Options`_ header, (`django-secure`_ can
+  provide one)
 
 Third party support
 -------------------
@@ -53,3 +58,7 @@ their views are used in lieu of the normal
 .. _Django: https://www.djangoproject.com/
 .. _django-fastsitemaps: https://github.com/litchfield/django-fastsitemaps
 .. _django-static-sitemaps: https://github.com/xaralis/django-static-sitemaps
+.. _Content-Security-Policy: http://en.wikipedia.org/wiki/Content_Security_Policy
+.. _X-Frame-Options: https://docs.djangoproject.com/en/stable/ref/clickjacking/
+.. _X-Content-Type-Options: https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+.. _django-secure: https://readthedocs.org/projects/django-secure/

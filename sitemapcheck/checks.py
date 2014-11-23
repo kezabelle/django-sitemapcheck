@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.utils import six
 from django.utils.encoding import force_text
 import re
 from django.utils.translation import ugettext_lazy as _
@@ -8,6 +7,7 @@ from collections import namedtuple
 Success = _("Success")
 Error = _("Error")
 Caution = _("Warning")
+Info = _("Info")
 CheckedResponse = namedtuple('CheckedResponse', 'msg code name')
 
 
@@ -129,4 +129,43 @@ def check_html5_doctype(response):
                                    'the first element in the document',
                                code=Error, name=checkname)
     return CheckedResponse(msg='yes', code=Success,
+                           name=checkname)
+
+
+def check_allow_header(response):
+    checkname = _("Allows HTTP methods")
+    if 'Allow' in response:
+        return CheckedResponse(msg=response['Allow'], code=Success,
+                               name=checkname)
+    return CheckedResponse(msg="Unknown", code=Info, name=checkname)
+
+
+def check_csp_header(response):
+    checkname = _("Has content security policy")
+    if 'Content-Security-Policy' in response:
+        return CheckedResponse(msg=response['Content-Security-Policy'],
+                               code=Success, name=checkname)
+    return CheckedResponse(msg="Missing Content-Security-Policy header, "
+                               "anything is permitted", code=Caution,
+                           name=checkname)
+
+
+def check_frameorigin_header(response):
+    checkname = _("Clickjacking via X-Frame-Options")
+    if 'X-Frame-Options' in response:
+        return CheckedResponse(msg=response['X-Frame-Options'], code=Success,
+                               name=checkname)
+    return CheckedResponse(msg="No X-Frame-Options set.", code=Error,
+                           name=checkname)
+
+
+def check_content_type_nosniff_header(response):
+    checkname = _("Browser content-type sniffing")
+    if 'X-Content-Type-Options' in response:
+        return CheckedResponse(msg=response['X-Content-Type-Options'],
+                               code=Success,
+                               name=checkname)
+    return CheckedResponse(msg="No X-Content-Type-Options set, browsers may "
+                               "sniff the stream to decide on a content-type",
+                           code=Info,
                            name=checkname)

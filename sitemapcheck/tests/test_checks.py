@@ -7,6 +7,7 @@ from sitemapcheck.checks import CheckedResponse
 from sitemapcheck.checks import Success
 from sitemapcheck.checks import Error
 from sitemapcheck.checks import Caution
+from sitemapcheck.checks import Info
 from sitemapcheck.checks import check_status_code
 from sitemapcheck.checks import check_html_title
 from sitemapcheck.checks import check_html_meta_description
@@ -18,6 +19,10 @@ from sitemapcheck.checks import check_html_meta_viewport
 from sitemapcheck.checks import check_mobile_homescreen
 from sitemapcheck.checks import check_ios_homescreen
 from sitemapcheck.checks import check_html5_doctype
+from sitemapcheck.checks import check_allow_header
+from sitemapcheck.checks import check_csp_header
+from sitemapcheck.checks import check_frameorigin_header
+from sitemapcheck.checks import check_content_type_nosniff_header
 
 
 class StatusCodeTestCase(Test):
@@ -267,3 +272,75 @@ class Html5DoctypeTestCase(Test):
         self.assertEqual(checked.code, Error)
         self.assertEqual(checked.msg, "Missing the HTML5 doctype, or it is not "
                                       "the first element in the document")
+
+
+class AllowHeaderTestCase(Test):
+    def test_has_allows(self):
+        response = HttpResponse()
+        response['Allow'] = 'WAT, YAY'
+        checked = check_allow_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Success)
+        self.assertEqual(checked.msg, "WAT, YAY")
+
+    def test_has_no_allows(self):
+        response = HttpResponse()
+        checked = check_allow_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Info)
+        self.assertEqual(checked.msg, "Unknown")
+
+
+class CspHeaderTestCase(Test):
+    def test_has_policy_defined(self):
+        response = HttpResponse()
+        response['Content-Security-Policy'] = "'self'"
+        checked = check_csp_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Success)
+        self.assertEqual(checked.msg, "'self'")
+
+    def test_has_no_content_policy(self):
+        response = HttpResponse()
+        checked = check_csp_header(response)
+        import pdb; pdb.set_trace()
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Caution)
+        self.assertEqual(checked.msg, "Missing Content-Security-Policy header, "
+                                      "anything is permitted")
+
+
+class XFrameOptionsHeaderTestCase(Test):
+    def test_has_xframe_deny_set(self):
+        response = HttpResponse()
+        response['X-Frame-Options'] = "DENY"
+        checked = check_frameorigin_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Success)
+        self.assertEqual(checked.msg, "DENY")
+
+    def test_has_no_xframe_header(self):
+        response = HttpResponse()
+        checked = check_frameorigin_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Error)
+        self.assertEqual(checked.msg, "No X-Frame-Options set.")
+
+
+class XContentTypeOptionsHeaderTestCase(Test):
+    def test_has_content_type_nosniff(self):
+        response = HttpResponse()
+        response['X-Content-Type-Options'] = "nosniff"
+        checked = check_content_type_nosniff_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Success)
+        self.assertEqual(checked.msg, "nosniff")
+
+    def test_allows_browser_content_type_sniffing(self):
+        response = HttpResponse()
+        checked = check_content_type_nosniff_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Info)
+        self.assertEqual(checked.msg, "No X-Content-Type-Options set, browsers "
+                                      "may sniff the stream to decide on "
+                                      "a content-type")

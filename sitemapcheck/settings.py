@@ -11,6 +11,10 @@ SITEMAPCHECK_CHECKS = (
     'sitemapcheck.checks.check_mobile_homescreen',
     'sitemapcheck.checks.check_ios_homescreen',
     'sitemapcheck.checks.check_html5_doctype',
+    'sitemapcheck.checks.check_allow_header',
+    'sitemapcheck.checks.check_csp_header',
+    'sitemapcheck.checks.check_frameorigin_header',
+    'sitemapcheck.checks.check_content_type_nosniff_header',
 )
 
 

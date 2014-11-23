@@ -15,6 +15,7 @@ from .settings import SITEMAPCHECK_CHECKS, SITEMAPCHECK_MULTIPROCESSING
 from .checks import Success
 from .checks import Caution
 from .checks import Error
+from .checks import Info
 
 try:  # try for Django 1.7+ first.
     from django.utils.module_loading import import_string
@@ -175,6 +176,7 @@ def render_report(results, root_dir):
                'Success': Success,
                'Warning': Caution,
                'Caution': Caution,
+               'Info': Info,
                'Error': Error}
     report_output = render_to_string(template_name=template_path,
                                      dictionary=context)

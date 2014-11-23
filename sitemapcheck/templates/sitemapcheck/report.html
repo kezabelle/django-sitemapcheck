@@ -6,6 +6,7 @@
         html {
             margin: 0;
             padding: 0;
+            background-color: white;
         }
         body {
             font-family: sans-serif;
@@ -27,7 +28,17 @@
             background: #FCC;
         }
         .check-result td {
-            padding: 0.25em;
+            padding: 0.25em 0.5em;
+            border-bottom: 1px solid white;
+        }
+        .check-result {
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            -o-transition: all 0.3s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+        .check-result:hover {
+            background: #CCF;
         }
 
         .check-code {

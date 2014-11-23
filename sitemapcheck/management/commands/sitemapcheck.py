@@ -9,6 +9,7 @@ from django.core.management import BaseCommand
 from sitemapcheck.checks import Error
 from sitemapcheck.checks import Caution
 from sitemapcheck.checks import Success
+from sitemapcheck.checks import Info
 from sitemapcheck.utils import get_view_sitemaps
 from sitemapcheck.utils import sitemap_request_iterator
 from sitemapcheck.utils import sitemap_urls_iterator
@@ -64,6 +65,8 @@ class Command(BaseCommand):
                     self.stdout.write("    " + self.style.WARNING(msg))
                 elif check.code == Success:
                     self.stdout.write("    " + self.style.HTTP_REDIRECT(msg))
+                elif check.code == Info:
+                    self.stdout.write("    " + msg)
                 else:
                     self.stderr.write("    " + self.style.ERROR(msg))
         render_report(results_for_reports, root_dir=os.getcwd())
