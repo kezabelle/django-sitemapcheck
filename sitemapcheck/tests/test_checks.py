@@ -303,7 +303,6 @@ class CspHeaderTestCase(Test):
     def test_has_no_content_policy(self):
         response = HttpResponse()
         checked = check_csp_header(response)
-        import pdb; pdb.set_trace()
         self.assertIsInstance(checked, CheckedResponse)
         self.assertEqual(checked.code, Caution)
         self.assertEqual(checked.msg, "Missing Content-Security-Policy header, "
