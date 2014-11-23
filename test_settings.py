@@ -11,9 +11,7 @@ DATABASES = {
 
 INSTALLED_APPS = (
     'django.contrib.sites',
-    'django.contrib.contenttypes',
-    'django.contrib.auth',
-    'django.contrib.admin',
+    'django.contrib.sitemaps',
 )
 
 ROOT_URLCONF = 'test_urls'

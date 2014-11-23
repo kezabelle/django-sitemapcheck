@@ -31,7 +31,7 @@ def runtests():
     # reminder to self: an ImportError in the tests may either turn up
     # or may cause this thing to barf with this crap:
     # AttributeError: 'module' object has no attribute 'tests'
-    test_args = ['.']
+    test_args = ['sitemapcheck']
     failures = Runner(
         verbosity=2, interactive=True, failfast=False).run_tests(test_args)
     sys.exit(failures)

@@ -114,10 +114,11 @@ def handle_request_response(client, path):
     # the stdlib's multiprocessing module.
     if isinstance(client, Client):
         # this first one is https://code.djangoproject.com/ticket/23895#ticket
-        data._request.resolver_match = None
-        data._request.environ['wsgi.input'] = None
-        data._request.environ['wsgi.errors'] = None
-        data._request._stream = None
+        if hasattr(data, '_request'):
+            data._request.resolver_match = None
+            data._request.environ['wsgi.input'] = None
+            data._request.environ['wsgi.errors'] = None
+            data._request._stream = None
         data.client.handler._request_middleware = []
         data.client.handler._exception_middleware = []
         data.client.handler._view_middleware = []
