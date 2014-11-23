@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+import logging
 from multiprocessing import cpu_count, Pool
 from django.utils import six
 from django.utils.encoding import force_text
@@ -21,18 +22,33 @@ except ImportError:  # < Django 1.7
     from django.utils.module_loading import import_by_path as import_string
 
 
+logger = logging.getLogger(__name__)
 ViewSitemaps = namedtuple('ViewSitemaps', 'success sitemaps mount_url message')
 
 
 def get_view_sitemaps(name='django.contrib.sitemaps.views.sitemap'):
+    url = None
     try:
-        url = reverse(name)
+        url = reverse('static_sitemaps.views.serve_index')
     except NoReverseMatch:
-        docs_url = "https://docs.djangoproject.com/en/dev/ref/contrib/sitemaps/"
-        msg = ("no URL named `{name!s}` as per the documentation: "
-               "{docs_url!s}".format(name=name, docs_url=docs_url))
-        return ViewSitemaps(success=False, sitemaps=None, mount_url=None,
-                            message=msg)
+        logger.info("django-static-sitemaps is probably not being used",
+                    exc_info=1)
+    if url is None:
+        try:
+            url = reverse('fastsitemaps.views.sitemap')
+        except NoReverseMatch:
+            logger.info("django-fastsitemaps is probably not being used",
+                        exc_info=1)
+    if url is None:
+        try:
+            url = reverse(name)
+        except NoReverseMatch:
+            docs_url = "https://docs.djangoproject.com/en/dev/ref/contrib/sitemaps/"  # noqa
+            msg = ("no URL named `{name!s}` as per the documentation: "
+                   "{docs_url!s}".format(name=name, docs_url=docs_url))
+            return ViewSitemaps(success=False, sitemaps=None, mount_url=None,
+                                message=msg)
+
     try:
         view = resolve(url)
     except Resolver404:

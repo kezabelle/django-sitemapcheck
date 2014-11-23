@@ -39,4 +39,14 @@ Currently checks exist for:
 * The presence of an ``<meta name="apple-mobile-web-app-capable" ...`` (used by
   iOS devices to decide if a website may be added to the homescreen)
 
+Third party support
+-------------------
+
+Should support `django-fastsitemaps`_ and `django-static-sitemaps`_, assuming
+their views are used in lieu of the normal
+``django.contrib.sitemaps.views.sitemap``.
+
+
 .. _Django: https://www.djangoproject.com/
+.. _django-fastsitemaps: https://github.com/litchfield/django-fastsitemaps
+.. _django-static-sitemaps: https://github.com/xaralis/django-static-sitemaps
