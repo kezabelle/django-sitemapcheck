@@ -47,6 +47,7 @@ Currently checks exist for:
 * If the page has an `X-Content-Type-Options`_ header, (`django-secure`_ can
   provide one)
 * If the page makes use of the `rel="home"`_ microformat.
+* If the page makes use of `Schema.org`_ breadcrumbs structured data.
 
 Third party support
 -------------------
@@ -64,3 +65,4 @@ their views are used in lieu of the normal
 .. _X-Content-Type-Options: https://www.owasp.org/index.php/List_of_useful_HTTP_headers
 .. _django-secure: https://readthedocs.org/projects/django-secure/
 .. _rel="home": http://microformats.org/wiki/rel-home
+.. _Schema.org: http://schema.org/docs/gs.html
