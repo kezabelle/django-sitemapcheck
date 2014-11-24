@@ -23,6 +23,7 @@ from sitemapcheck.checks import check_allow_header
 from sitemapcheck.checks import check_csp_header
 from sitemapcheck.checks import check_frameorigin_header
 from sitemapcheck.checks import check_content_type_nosniff_header
+from sitemapcheck.checks import check_html_rel_home
 
 
 class StatusCodeTestCase(Test):
@@ -343,3 +344,27 @@ class XContentTypeOptionsHeaderTestCase(Test):
         self.assertEqual(checked.msg, "No X-Content-Type-Options set, browsers "
                                       "may sniff the stream to decide on "
                                       "a content-type")
+
+
+class RelHomeTestCase(Test):
+    def test_has_rel_home(self):
+        response = HttpResponse(content="""
+        <html><head>
+        </head><body>
+        <a href="#" rel="home">test</a>
+        <a href="#" rel="home">test2</a>
+        </body></html>
+        """)
+        checked = check_html_rel_home(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Success)
+        self.assertEqual(checked.msg, "2 found")
+
+    def test_has_not_got_rel_home(self):
+        response = HttpResponse(content="""
+        <html><head></head><body>yay</body></html>
+        """)
+        checked = check_html_rel_home(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Info)
+        self.assertEqual(checked.msg, 'Missing rel="home" microformat')

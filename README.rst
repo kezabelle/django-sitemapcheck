@@ -46,6 +46,7 @@ Currently checks exist for:
 * If the page as a `X-Frame-Options`_ header.
 * If the page has an `X-Content-Type-Options`_ header, (`django-secure`_ can
   provide one)
+* If the page makes use of the `rel="home"`_ microformat.
 
 Third party support
 -------------------
@@ -62,3 +63,4 @@ their views are used in lieu of the normal
 .. _X-Frame-Options: https://docs.djangoproject.com/en/stable/ref/clickjacking/
 .. _X-Content-Type-Options: https://www.owasp.org/index.php/List_of_useful_HTTP_headers
 .. _django-secure: https://readthedocs.org/projects/django-secure/
+.. _rel="home": http://microformats.org/wiki/rel-home

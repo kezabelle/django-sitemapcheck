@@ -173,3 +173,13 @@ def check_content_type_nosniff_header(response):
                                "sniff the stream to decide on a content-type",
                            code=Info,
                            name=checkname)
+
+
+def check_html_rel_home(response):
+    checkname = _("rel=home")
+    if 'rel="home"' not in force_text(response.content):
+        return CheckedResponse(msg='Missing rel="home" microformat',
+                               code=Info, name=checkname)
+    count = force_text(response.content).count('rel="home"')
+    return CheckedResponse(msg='{count} found'.format(count=count),
+                           code=Success, name=checkname)
