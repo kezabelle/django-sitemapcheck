@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
+from django.template.defaultfilters import pluralize
 from django.utils.encoding import force_text
 from django.utils import six
 from django.utils.safestring import mark_safe
@@ -50,6 +51,8 @@ class Command(BaseCommand):
         else:
             results = singleprocessor(prepared_requests)
         results_for_reports = []
+        errors = []
+        warnings = []
         for result in results:
             self.stdout.write(self.style.HTTP_SUCCESS(result.path))
             results_for_reports.append(result)
@@ -60,13 +63,25 @@ class Command(BaseCommand):
                 check_msg = force_text(mark_safe(check.msg))
                 msg = '{name!s}: {msg!s}'.format(name=name, msg=check_msg)
                 if check.code == Error:
+                    errors.append(name)
                     self.stderr.write("    " + self.style.ERROR(msg))
                 elif check.code == Caution:
+                    warnings.append(name)
                     self.stdout.write("    " + self.style.WARNING(msg))
                 elif check.code == Success:
                     self.stdout.write("    " + self.style.HTTP_REDIRECT(msg))
                 elif check.code == Info:
                     self.stdout.write("    " + msg)
                 else:
+                    errors.append(name)
                     self.stderr.write("    " + self.style.ERROR(msg))
+        error_count = len(errors)
+        warning_count = len(warnings)
+        if error_count > 0:
+            self.stderr.write("{count!s} error{plural}".format(
+                count=error_count, plural=pluralize(error_count)))
+        if warning_count > 0:
+            self.stdout.write("{count!s} warning{plural}".format(
+                count=warning_count, plural=pluralize(warning_count)))
         render_report(results_for_reports, root_dir=os.getcwd())
+        return sys.exit(error_count)
