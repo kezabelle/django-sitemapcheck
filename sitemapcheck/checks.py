@@ -11,6 +11,9 @@ Info = _("Info")
 CheckedResponse = namedtuple('CheckedResponse', 'msg code name')
 
 
+DEFAULT_RE_FLAGS = re.DOTALL | re.IGNORECASE | re.MULTILINE
+title_re = re.compile(r'<title>(.+?)</title>', flags=DEFAULT_RE_FLAGS)
+
 def check_status_code(response):
     checkname = _("Status code")
     if response.status_code > 300 and response.status_code < 400:
@@ -25,12 +28,13 @@ def check_status_code(response):
 
 def check_html_title(response):
     checkname = _("HTML title")
-    data = re.search(r'<title>(.+)</title>', force_text(response.content))
+    data = title_re.search(force_text(response.content))
     if data is None:
         return CheckedResponse(msg="Missing <title>", code=Error,
                                name=checkname)
-    return CheckedResponse(msg=','.join(data.groups()), code=Success,
-                           name=checkname)
+    outdata = ','.join(data.groups())
+    collapsed_outdata = re.sub('\s+', ' ', outdata)
+    return CheckedResponse(msg=collapsed_outdata, code=Success, name=checkname)
 
 
 def check_html_meta_description(response):
