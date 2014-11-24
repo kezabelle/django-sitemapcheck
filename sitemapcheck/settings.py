@@ -16,6 +16,7 @@ SITEMAPCHECK_CHECKS = (
     'sitemapcheck.checks.check_frameorigin_header',
     'sitemapcheck.checks.check_content_type_nosniff_header',
     'sitemapcheck.checks.check_html_rel_home',
+    'sitemapcheck.checks.check_html_schemaorg_breadcrumbs',
 )
 
 

@@ -183,3 +183,15 @@ def check_html_rel_home(response):
     count = force_text(response.content).count('rel="home"')
     return CheckedResponse(msg='{count} found'.format(count=count),
                            code=Success, name=checkname)
+
+
+def check_html_schemaorg_breadcrumbs(response):
+    checkname = _("Schema.org breadcrumbs")
+    breadcrumbs = 'itemtype="http://schema.org/Breadcrumb"'
+    breadcrumbs_found = breadcrumbs in force_text(response.content)
+    if not breadcrumbs_found:
+        return CheckedResponse(msg="Doesn't have breadcrumbs itemtype",
+                               code=Info, name=checkname)
+    count = force_text(response.content).count(breadcrumbs)
+    return CheckedResponse(msg='{count} found'.format(count=count),
+                           code=Success, name=checkname)

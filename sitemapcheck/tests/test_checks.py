@@ -24,6 +24,7 @@ from sitemapcheck.checks import check_csp_header
 from sitemapcheck.checks import check_frameorigin_header
 from sitemapcheck.checks import check_content_type_nosniff_header
 from sitemapcheck.checks import check_html_rel_home
+from sitemapcheck.checks import check_html_schemaorg_breadcrumbs
 
 
 class StatusCodeTestCase(Test):
@@ -368,3 +369,26 @@ class RelHomeTestCase(Test):
         self.assertIsInstance(checked, CheckedResponse)
         self.assertEqual(checked.code, Info)
         self.assertEqual(checked.msg, 'Missing rel="home" microformat')
+
+
+class SchemaBreadcrumbsTestCase(Test):
+    def test_has_rel_home(self):
+        response = HttpResponse(content="""
+        <html><head>
+        </head><body>
+        <a itemtype="http://schema.org/Breadcrumb">...</a>
+        </body></html>
+        """)
+        checked = check_html_schemaorg_breadcrumbs(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Success)
+        self.assertEqual(checked.msg, "1 found")
+
+    def test_has_not_got_rel_home(self):
+        response = HttpResponse(content="""
+        <html><head></head><body>yay</body></html>
+        """)
+        checked = check_html_schemaorg_breadcrumbs(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Info)
+        self.assertEqual(checked.msg, "Doesn't have breadcrumbs itemtype")
