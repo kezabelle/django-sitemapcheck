@@ -310,6 +310,15 @@ class CspHeaderTestCase(Test):
         self.assertEqual(checked.msg, "Missing Content-Security-Policy header, "
                                       "anything is permitted")
 
+    def test_has_unsafe_values(self):
+        response = HttpResponse()
+        response['Content-Security-Policy'] = "'unsafe-eval'"
+        checked = check_csp_header(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Caution)
+        self.assertEqual(checked.msg, "'unsafe-inline' or 'unsafe-eval was "
+                                      "found in `'unsafe-eval'`")
+
 
 class XFrameOptionsHeaderTestCase(Test):
     def test_has_xframe_deny_set(self):

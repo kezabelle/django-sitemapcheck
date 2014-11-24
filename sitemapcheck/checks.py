@@ -147,7 +147,14 @@ def check_allow_header(response):
 def check_csp_header(response):
     checkname = _("Has content security policy")
     if 'Content-Security-Policy' in response:
-        return CheckedResponse(msg=response['Content-Security-Policy'],
+        header = response['Content-Security-Policy']
+        unsafe_inline = 'unsafe-inline' in header
+        unsafe_eval = 'unsafe-eval' in header
+        if unsafe_inline or unsafe_eval:
+            msg = ("'unsafe-inline' or 'unsafe-eval was found in "
+                   "`{header!s}`".format(header=header))
+            return CheckedResponse(msg=msg, code=Caution, name=checkname)
+        return CheckedResponse(msg=header,
                                code=Success, name=checkname)
     return CheckedResponse(msg="Missing Content-Security-Policy header, "
                                "anything is permitted", code=Caution,
