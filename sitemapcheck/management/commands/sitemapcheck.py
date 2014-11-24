@@ -56,8 +56,8 @@ class Command(BaseCommand):
             for check in result.check_results:
                 if check is None:
                     continue
-                name = force_text(check.name).encode('ascii', 'ignore')
-                check_msg = mark_safe(check.msg).encode('ascii', 'ignore')
+                name = force_text(check.name)
+                check_msg = force_text(mark_safe(check.msg))
                 msg = '{name!s}: {msg!s}'.format(name=name, msg=check_msg)
                 if check.code == Error:
                     self.stderr.write("    " + self.style.ERROR(msg))
