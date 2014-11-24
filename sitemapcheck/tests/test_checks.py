@@ -64,6 +64,16 @@ class HtmlTitleTestCase(Test):
         self.assertEqual(checked.code, Success)
         self.assertEqual(checked.msg, "test")
 
+    def test_really_long_title(self):
+        title = '-' * 56
+        response = HttpResponse(content="""
+        <html><head><title>{title}</title></head><body>yay</body></html>
+        """.format(title=title))
+        checked = check_html_title(response)
+        self.assertIsInstance(checked, CheckedResponse)
+        self.assertEqual(checked.code, Caution)
+        self.assertEqual(checked.msg, title)
+
     def test_has_no_title(self):
         response = HttpResponse(content="""
         <html><head></head><body>yay</body></html>

@@ -34,6 +34,10 @@ def check_html_title(response):
                                name=checkname)
     outdata = ','.join(data.groups())
     collapsed_outdata = re.sub('\s+', ' ', outdata)
+    # see here http://moz.com/learn/seo/title-tag
+    if len(collapsed_outdata) > 55:
+        return CheckedResponse(msg=collapsed_outdata, code=Caution,
+                               name=checkname)
     return CheckedResponse(msg=collapsed_outdata, code=Success, name=checkname)
 
 
