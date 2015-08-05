@@ -2,6 +2,10 @@
 from collections import namedtuple
 import logging
 from multiprocessing import cpu_count, Pool
+try:
+    from django.contrib.sites.shortcuts import get_current_site
+except ImportError:
+    from django.contrib.sites.models import get_current_site
 from django.utils import six
 from django.utils.encoding import force_text
 import os
@@ -10,7 +14,7 @@ from django.core.paginator import InvalidPage
 from django.core.urlresolvers import (reverse, NoReverseMatch, resolve,
                                       Resolver404)
 from django.template.loader import render_to_string
-from django.test import Client
+from django.test import Client, RequestFactory
 from .settings import SITEMAPCHECK_CHECKS, SITEMAPCHECK_MULTIPROCESSING
 from .checks import Success
 from .checks import Caution
@@ -67,13 +71,15 @@ def get_view_sitemaps(name='django.contrib.sitemaps.views.sitemap'):
 
 
 def sitemap_urls_iterator(sitemaps):
+    request = RequestFactory().get('/')
+    request_site = get_current_site(request=request)
     for site in sitemaps:
         if callable(site):
             site = site()
         pages = site.paginator.page_range
         for page in pages:
             try:
-                for url in site.get_urls(page=page):
+                for url in site.get_urls(page=page, site=request_site):
                     yield url
             except InvalidPage:
                 pass
